@@ -64,7 +64,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     Engine *engine = new Engine(L"APP", 780, 250, 500, 500, hInstance, CREATE_CONSOLE);
 
-    glClearColor(1.0f, 0.5f, 0.85f, 1.0f);
+    glClearColor(0.91f, 0.67f, 0.33f, 1.0f);
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
 
@@ -112,13 +112,35 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     glDeleteProgram(fs);
 
     glUseProgram(shader);
+    
+    int offset = glGetUniformLocation(shader, "u_Offset");
+    int color = glGetUniformLocation(shader, "u_Color");
+
+    float x = 0;
+    float y = 0;
+    int vecX = 1;
+    int vecY = 1;
 
     // Main Loop
     while(engine->EngineRunning())
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // DRAW CALL 1
+        glUniform4f(offset, 0.0, 0.0, 0.0, 2.0);
+        glUniform4f(color, 0.1, 0.8, 0.6, 1.0);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        // DRAW CALL 2
+        glUniform4f(offset, x, y, 0.0, 2.0);
+        glUniform4f(color, 0.94, 0.26, 0.26, 1.0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        x += vecX * 0.1f;
+        y += vecY * 0.09f;
+
+        if(x >= 2.5f || x <= -2.5f) vecX = -(vecX);
+        if(y >= 2.5f || y <= -2.5f) vecY = -(vecY);
 
         engine->SwapGLBuffers();
     }

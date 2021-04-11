@@ -2,8 +2,9 @@
 
 layout(location = 0) in vec4 positions;
 
+uniform vec4 u_Offset;
+
 void main()
 {
-    vec4 offset = vec4(0.45, 0.45, 0.0, 0.0);
-    gl_Position = positions - offset;
+    gl_Position = positions + u_Offset;
 }
