@@ -1,5 +1,7 @@
 #include <Windows.h>
 
+#define CREATE_CONSOLE 0x01
+
 class Engine{
 private:
     HWND m_Hwnd;
@@ -13,7 +15,7 @@ private:
     static LRESULT WindowCreate(HWND hwnd);
 
 public:
-    Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance);
+    Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance, int options);
     ~Engine();
 
     bool EngineRunning();

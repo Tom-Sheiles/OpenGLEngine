@@ -4,6 +4,7 @@
 
 #include "Engine.h"
 #include <Windows.h>
+#include <stdio.h>
 
 LRESULT Engine::WindowDestroy(HWND hwnd)
 {
@@ -74,9 +75,20 @@ void Engine::SwapGLBuffers()
     SwapBuffers(hdc);
 }
 
-Engine::Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance)
+Engine::Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance, int options = 0)
     :m_WindowName(WindowName), m_Width(width), m_Height(height)
 {
+
+    if((options & CREATE_CONSOLE) == CREATE_CONSOLE){
+        int res = AllocConsole();
+        if(res)
+        {
+            freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+            HWND console = GetConsoleWindow();
+            SetWindowPos(console, 0, 0, 100, 0, 0, SWP_NOSIZE);
+        }
+    }
+
     STARTUPINFO si;
     GetStartupInfo(&si);
     int cmd = si.wShowWindow;

@@ -3,14 +3,14 @@
 #endif
 
 #include <Windows.h>
-#include <stdio.h>
+#include <iostream>
 #include <gl/GL.h>
 
 #include "Engine.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    Engine *engine = new Engine(L"APP", 0, 0, 500, 500, hInstance);
+    Engine *engine = new Engine(L"APP", 780, 250, 500, 500, hInstance, 0);
 
     glClearColor(1.0f, 0.5f, 0.85f, 1.0f);
     bool isRunning = false;
