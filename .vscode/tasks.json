@@ -9,15 +9,20 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
+                "/Fo${workspaceFolder}\\Inter\\",    // Directory for object files
                 "/Fe:",
-                "${fileDirname}\\main.exe",
-                "${workspaceFolder}\\*.cpp",
+                "${fileDirname}\\Builds\\main.exe",  // Executable location and name
+                "${workspaceFolder}\\*.cpp",         // Souce Files
+                "/I",
+                "${workspaceFolder}\\libs\\glew\\include\\", // Include Directories
                 "/link",
                 "/SUBSYSTEM:WINDOWS",
+                "/LIBPATH:${workspaceFolder}\\libs\\glew\\lib\\Release\\Win32", // glew library path
                 "user32.lib",
                 "gdi32.lib",
                 "kernel32.lib",
-                "opengl32.lib"
+                "opengl32.lib",
+                "glew32.lib",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -3,6 +3,7 @@
 #endif
 
 #include "Engine.h"
+#include <GL/glew.h>
 #include <Windows.h>
 #include <stdio.h>
 
@@ -42,6 +43,15 @@ LRESULT Engine::WindowCreate(HWND hwnd)
 
     HGLRC RenderingContext = wglCreateContext(hdc);
     wglMakeCurrent(hdc, RenderingContext);
+
+    if(glewInit() != GLEW_OK)
+    {
+        printf("Glew could not be loaded\n");
+    }
+    else{
+        printf("OpenGl Extension Library loaded successfully\n");
+    }
+
     return 0;
 }
 

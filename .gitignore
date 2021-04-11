@@ -1,4 +1,16 @@
+/Builds
+/libs/glew/doc
+/libs/glew/bin
+/libs/glew/LICENSE.txt
+/Inter
+
 *.exe
 *.ilk
 *.obj
 *.pdb
+*.dll
+
+eglew.h
+glxew.h
+wglew.h
+glew32s.lib
