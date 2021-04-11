@@ -6,84 +6,29 @@
 #include <stdio.h>
 #include <gl/GL.h>
 
-LRESULT CALLBACK SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+#include "Engine.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    const wchar_t className[] = L"Window Class";
+    Engine *engine = new Engine(L"APP", 0, 0, 500, 500, hInstance);
 
-    WNDCLASS wc = {};
-    wc.lpfnWndProc = SystemMessage;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = className;
+    glClearColor(1.0f, 0.5f, 0.85f, 1.0f);
+    bool isRunning = false;
 
-    RegisterClass(&wc);
-
-    HWND hwnd = CreateWindowEx(
-        CS_OWNDC,
-        className,
-        L"Window",
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        CW_USEDEFAULT, CW_USEDEFAULT, 500, 500,
-        NULL,
-        NULL,
-        hInstance,
-        NULL
-    );
-
-    if(hwnd == NULL){ return -1; }
-    ShowWindow(hwnd, nCmdShow);
-    MSG msg = {};
-
-    while(GetMessage(&msg, NULL, 0, 0))
+    while((isRunning = engine->EngineRunning()))
     {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBegin(GL_POLYGON);
+
+        glVertex2f(-0.5f, -0.5f); glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f( 0.5f, -0.5f); glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f( 0.0f,  0.5f); glColor3f(0.0f, 0.0f, 1.0f);
+
+        glEnd();
+
+        engine->SwapGLBuffers();
     }
 
     return 0;
-}
-
-LRESULT CALLBACK OnCreate(HWND hwnd)
-{
-    PIXELFORMATDESCRIPTOR pfd = {
-        sizeof(PIXELFORMATDESCRIPTOR),
-			1,
-			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    //Flags
-			PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
-			32,                   // Colordepth of the framebuffer.
-			0, 0, 0, 0, 0, 0,
-			0,
-			0,
-			0,
-			0, 0, 0, 0,
-			24,                   // Number of bits for the depthbuffer
-			8,                    // Number of bits for the stencilbuffer
-			0,                    // Number of Aux buffers in the framebuffer.
-			PFD_MAIN_PLANE,
-			0,
-			0, 0, 0
-    };
-
-    HDC windowContext = GetDC(hwnd);
-    int pixelFormat;
-    pixelFormat = ChoosePixelFormat(windowContext, &pfd);
-    SetPixelFormat(windowContext, pixelFormat, &pfd);
-
-    HGLRC OpenGlContext = wglCreateContext(windowContext);
-    wglMakeCurrent(windowContext, OpenGlContext);
-
-    MessageBoxA(0, (char*)glGetString(GL_VERSION), "OpenGL Version", 0);
-    return 0;
-}
-
-LRESULT CALLBACK SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-    switch (msg)
-    {
-        case WM_DESTROY:  PostQuitMessage(0); return 0;
-        case WM_CREATE:   return OnCreate(hwnd);
-    }
-
-    return DefWindowProc(hwnd, msg, wparam, lparam);
 }
