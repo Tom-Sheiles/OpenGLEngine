@@ -1,6 +1,7 @@
 #include <Windows.h>
 
 #define CREATE_CONSOLE 0x01
+extern bool aHeld;
 
 class Engine{
 private:

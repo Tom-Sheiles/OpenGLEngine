@@ -7,6 +7,8 @@
 #include <Windows.h>
 #include <stdio.h>
 
+bool aHeld = false;
+
 LRESULT Engine::WindowDestroy(HWND hwnd)
 {
     DestroyWindow(hwnd);
@@ -55,6 +57,12 @@ LRESULT Engine::WindowCreate(HWND hwnd)
     return 0;
 }
 
+LRESULT KeyEvent(WPARAM Key, bool set)
+{
+    if(Key == 'A')  aHeld = set;
+    return 0;
+}
+
 
 LRESULT CALLBACK Engine::SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam){
     switch (msg)
@@ -62,6 +70,8 @@ LRESULT CALLBACK Engine::SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_CLOSE:    return Engine::WindowDestroy(hwnd);
         case WM_DESTROY:  PostQuitMessage(0); return 0;
         case WM_CREATE:   return Engine::WindowCreate(hwnd);
+        case WM_KEYDOWN : return KeyEvent(wparam, true); 
+        case WM_KEYUP:    return KeyEvent(wparam, false);
     }
 
     return DefWindowProc(hwnd, msg, wparam, lparam);

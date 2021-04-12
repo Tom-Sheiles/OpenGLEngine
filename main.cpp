@@ -66,22 +66,24 @@ unsigned int CompileShader(char* fileName, unsigned int type)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    float screenWidth = 800;
-    float screenHeight = 600;
+    float screenWidth = 1280;
+    float screenHeight = 720;
 
-    Engine *engine = new Engine(L"APP", 320, 150, screenWidth, screenHeight, hInstance, 0);
+    Engine *engine = new Engine(L"APP", 320, 150, screenWidth, screenHeight, hInstance, CREATE_CONSOLE);
 
     glClearColor(0.91f, 0.67f, 0.33f, 1.0f);
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-    //glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
-    glm::mat4 proj = glm::perspective(90.0f, screenWidth/screenHeight, 0.1f, 10000.0f);
-    //glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(screenWidth/2, screenHeight/2, 0));
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
-    model = glm::translate(model, glm::vec3(0, 0, -2.0f));
+    glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
+    glm::mat4 view = glm::translate(proj, glm::vec3(screenWidth/2, screenHeight/2, 0));
 
-    glm::mat4 mvp = proj * view * model;
+    glm::mat4 tran = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 rot = glm::rotate(tran, 45.0f, glm::vec3(0,0,1));
+    glm::mat4 scale = glm::scale(rot, glm::vec3(100.0f));
+
+    glm::mat4 model = scale;
+
+    glm::mat4 mvp = model;
 
     float positions[] = {
         -1.0f, -1.0f,
@@ -133,25 +135,43 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     glUniformMatrix4fv(uMVP, 1, GL_FALSE, &mvp[0][0]);
 
-    float x = 0;
-    float y = 0;
-    int vecX = 1;
-    int vecY = 1;
+    float a = 0;
+    float x = 0, y = 0;
+    float s = 100.0f;
+
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); WIREFRAME
 
     // Main Loop
     while(engine->EngineRunning())
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        model = glm::rotate(model, 0.01f, glm::vec3(1,1,0.5f));
-        mvp = proj * view * model;
-        glUniformMatrix4fv(uMVP, 1, GL_FALSE, &mvp[0][0]);
+        tran = glm::translate(view, glm::vec3(-300.0f, y, 0.0f));
+        rot = glm::rotate(tran, a, glm::vec3(0,0,-1));
+        scale = glm::scale(rot, glm::vec3(s));
 
+        model = scale;
+
+        glUniformMatrix4fv(uMVP, 1, GL_FALSE, &model[0][0]);
+        
+        glUniform4f(color, 0.1, 0.8, 0.6, 1.0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+
+        tran = glm::translate(view, glm::vec3(300.0f, 0.0f, 0.0f));
+        rot = glm::rotate(tran, -a, glm::vec3(0,0,-1));
+        scale = glm::scale(rot, glm::vec3(100));
+
+        model = scale;
+
+        glUniformMatrix4fv(uMVP, 1, GL_FALSE, &model[0][0]);
+        
         glUniform4f(color, 0.1, 0.8, 0.6, 1.0);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         engine->SwapGLBuffers();
 
+        if(aHeld) a += 0.01f;
     }
 
     return 0;
