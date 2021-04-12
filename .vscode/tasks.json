@@ -21,6 +21,7 @@
                 "user32.lib",
                 "gdi32.lib",
                 "kernel32.lib",
+                "winmm.lib",
                 "opengl32.lib",
                 "glew32.lib",
             ],

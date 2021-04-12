@@ -2,9 +2,9 @@
 
 layout(location = 0) in vec4 positions;
 
-uniform vec4 u_Offset;
+uniform mat4 u_MVP;
 
 void main()
 {
-    gl_Position = positions + u_Offset;
+    gl_Position = u_MVP * positions;
 }

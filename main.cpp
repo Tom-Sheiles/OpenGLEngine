@@ -10,6 +10,10 @@
 #include <iostream>
 #include <stdio.h>
 
+#include "Math.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 void GetShaderCompileInfo(unsigned int id)
 {
     int result;
@@ -62,17 +66,28 @@ unsigned int CompileShader(char* fileName, unsigned int type)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    Engine *engine = new Engine(L"APP", 780, 250, 500, 500, hInstance, CREATE_CONSOLE);
+    float screenWidth = 800;
+    float screenHeight = 600;
+
+    Engine *engine = new Engine(L"APP", 320, 150, screenWidth, screenHeight, hInstance, 0);
 
     glClearColor(0.91f, 0.67f, 0.33f, 1.0f);
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
+    //glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
+    glm::mat4 proj = glm::perspective(90.0f, screenWidth/screenHeight, 0.1f, 10000.0f);
+    //glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(screenWidth/2, screenHeight/2, 0));
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+    model = glm::translate(model, glm::vec3(0, 0, -2.0f));
+
+    glm::mat4 mvp = proj * view * model;
 
     float positions[] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f, 0.5f,
-        -0.5f, 0.5f
+        -1.0f, -1.0f,
+         1.0f, -1.0f,
+         1.0f, 1.0f,
+        -1.0f, 1.0f
     };
 
     unsigned int indicies[]
@@ -113,8 +128,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     glUseProgram(shader);
     
-    int offset = glGetUniformLocation(shader, "u_Offset");
     int color = glGetUniformLocation(shader, "u_Color");
+    int uMVP = glGetUniformLocation(shader, "u_MVP");
+
+    glUniformMatrix4fv(uMVP, 1, GL_FALSE, &mvp[0][0]);
 
     float x = 0;
     float y = 0;
@@ -126,23 +143,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // DRAW CALL 1
-        glUniform4f(offset, 0.0, 0.0, 0.0, 2.0);
+        model = glm::rotate(model, 0.01f, glm::vec3(1,1,0.5f));
+        mvp = proj * view * model;
+        glUniformMatrix4fv(uMVP, 1, GL_FALSE, &mvp[0][0]);
+
         glUniform4f(color, 0.1, 0.8, 0.6, 1.0);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
-        // DRAW CALL 2
-        glUniform4f(offset, x, y, 0.0, 2.0);
-        glUniform4f(color, 0.94, 0.26, 0.26, 1.0);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-        x += vecX * 0.1f;
-        y += vecY * 0.09f;
-
-        if(x >= 2.5f || x <= -2.5f) vecX = -(vecX);
-        if(y >= 2.5f || y <= -2.5f) vecY = -(vecY);
-
         engine->SwapGLBuffers();
+
     }
 
     return 0;
