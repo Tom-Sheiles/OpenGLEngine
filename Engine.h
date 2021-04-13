@@ -24,4 +24,6 @@ public:
 
     bool EngineRunning();
     void SwapGLBuffers();
+
+    void SetWindowTitle(const char* title);
 };  

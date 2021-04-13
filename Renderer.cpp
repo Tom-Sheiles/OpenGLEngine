@@ -25,7 +25,7 @@ void Renderer::Init(int screenWidth, int screenHeight, Engine *engine)
 
     s_engine = engine;
 
-    glClearColor(0.91f, 0.67f, 0.33f, 1.0f);
+    glClearColor(0.53f, 0.42f, 0.65f, 1);
 
     projectionMatrix = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
     viewMatrix = glm::translate(projectionMatrix, glm::vec3(screenWidth/2, screenHeight/2, 0));
@@ -42,10 +42,15 @@ void Renderer::Draw()
     glClear(GL_COLOR_BUFFER_BIT);
     for(int i = 0; i < objects.size(); i++)
     {
-        //objects[i]->BindObject();
         objects[i]->transformObject();
         glDrawElements(GL_TRIANGLES, objects[i]->GetNIndicies(), GL_UNSIGNED_INT, nullptr);
     }
 
     s_engine->SwapGLBuffers();
+}
+
+void Renderer::Resize(int width, int height)
+{
+   projectionMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f); 
+   glViewport(0, 0, width, height);
 }

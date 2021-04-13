@@ -18,4 +18,5 @@ public:
     static void Init(int screenWidth, int screenHeight, Engine *engine);
     static void Register(Object *object);
     static void Draw();
+    static void Resize(int width, int height);
 };

@@ -17,7 +17,7 @@ protected:
     unsigned int m_IndexBuffer;
     unsigned int m_nIndicies;
 
-    Material *m_Material; // This will be material later
+    Material *m_Material;
     glm::mat4 m_modelMatrix;
     int u_MVP;
 

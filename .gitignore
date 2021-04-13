@@ -9,6 +9,7 @@
 *.obj
 *.pdb
 *.dll
+*.bat
 
 eglew.h
 glxew.h

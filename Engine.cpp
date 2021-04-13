@@ -3,6 +3,7 @@
 #endif
 
 #include "Engine.h"
+#include "Renderer.h"
 #include <GL/glew.h>
 #include <Windows.h>
 #include <windowsx.h>
@@ -72,16 +73,23 @@ LRESULT MouseEvent(WPARAM Button, int xPos, int yPos)
 }
 
 
+LRESULT Resize(WPARAM type, int width, int height)
+{
+    Renderer::Resize(width, height);
+    return 0;
+}
+
 LRESULT CALLBACK Engine::SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam){
     switch (msg)
     {
-        case WM_CLOSE:    return Engine::WindowDestroy(hwnd);
-        case WM_DESTROY:  PostQuitMessage(0); return 0;
-        case WM_CREATE:   return Engine::WindowCreate(hwnd);
-        case WM_KEYDOWN : return KeyEvent(wparam, true); 
-        case WM_KEYUP:    return KeyEvent(wparam, false);
-        case WM_LBUTTONDOWN: return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
-        case WM_RBUTTONDOWN: return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
+        case WM_CLOSE:        return Engine::WindowDestroy(hwnd);
+        case WM_CREATE:       return Engine::WindowCreate(hwnd);
+        case WM_DESTROY:      PostQuitMessage(0); return 0;
+        case WM_KEYDOWN :     return KeyEvent(wparam, true); 
+        case WM_KEYUP:        return KeyEvent(wparam, false);
+        case WM_LBUTTONDOWN:  return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
+        case WM_RBUTTONDOWN:  return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
+        case WM_SIZE :        return Resize(wparam, LOWORD(lparam), HIWORD(lparam));
 
     }
 
@@ -104,6 +112,11 @@ void Engine::SwapGLBuffers()
 {
     HDC hdc = GetDC(m_Hwnd);
     SwapBuffers(hdc);
+}
+
+void Engine::SetWindowTitle(const char* title)
+{
+    SetWindowTextA(m_Hwnd, title);
 }
 
 Engine::Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance, int options = 0)

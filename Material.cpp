@@ -65,13 +65,19 @@ float* HexToFv(const char* color)
     return hex;
 }
 
+/*
+// This is a fundamnetally flawed method for materials as it recompiles the same shader for each new material
+// The material system should compile each shader only on the first material.
+// Each new material should then get a pointer to the compiled shader and store a map of uniforms that get
+// Set for each draw call.
+*/
 Material::Material(unsigned int inbuiltShader)
 {
     if((inbuiltShader & STANDARD_SHADER) == STANDARD_SHADER)
     {
         m_Shader = glCreateProgram();
-        unsigned int vs = CompileShader("./Shaders/StandardVertex.GLSL", GL_VERTEX_SHADER);
-        unsigned int fs = CompileShader("./Shaders/StandardFragment.GLSL", GL_FRAGMENT_SHADER);
+        unsigned int vs = CompileShader("./res/Shaders/StandardVertex.GLSL", GL_VERTEX_SHADER);
+        unsigned int fs = CompileShader("./res/Shaders/StandardFragment.GLSL", GL_FRAGMENT_SHADER);
 
         glAttachShader(m_Shader, vs);
         glAttachShader(m_Shader, fs);
