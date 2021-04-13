@@ -1,7 +1,15 @@
-class Quad
+#pragma once
+
+#include "Object.h"
+
+class Quad: public Object
 {
-private:
 public:
-    Quad();
+    Quad(Material *material);
     ~Quad();
+
+    void transformObject();
+
+private:
+    void RegisterObject();
 };

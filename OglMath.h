@@ -1,6 +1,15 @@
+#pragma once
+
 struct Vector3{
     float x, y, z;
 };
+
+/*float* HexToFv(const char* color)
+{
+    float *hex = new float[4];
+
+    return hex;
+}*/
 
 /*struct Vec4
 {
