@@ -1,7 +1,9 @@
 #include <Windows.h>
 
 #define CREATE_CONSOLE 0x01
-extern bool aHeld;
+
+extern bool Keys[127];
+extern bool Mouse[3];
 
 class Engine{
 private:

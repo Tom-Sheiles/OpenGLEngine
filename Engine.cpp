@@ -5,9 +5,11 @@
 #include "Engine.h"
 #include <GL/glew.h>
 #include <Windows.h>
+#include <windowsx.h>
 #include <stdio.h>
 
-bool aHeld = false;
+ bool Keys[127];
+ bool Mouse[3];
 
 LRESULT Engine::WindowDestroy(HWND hwnd)
 {
@@ -59,7 +61,13 @@ LRESULT Engine::WindowCreate(HWND hwnd)
 
 LRESULT KeyEvent(WPARAM Key, bool set)
 {
-    if(Key == 'A')  aHeld = set;
+    Keys[Key] = set;
+    return 0;
+}
+
+LRESULT MouseEvent(WPARAM Button, int xPos, int yPos)
+{
+    Mouse[Button] = true;
     return 0;
 }
 
@@ -72,6 +80,9 @@ LRESULT CALLBACK Engine::SystemMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_CREATE:   return Engine::WindowCreate(hwnd);
         case WM_KEYDOWN : return KeyEvent(wparam, true); 
         case WM_KEYUP:    return KeyEvent(wparam, false);
+        case WM_LBUTTONDOWN: return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
+        case WM_RBUTTONDOWN: return MouseEvent(wparam, GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam));
+
     }
 
     return DefWindowProc(hwnd, msg, wparam, lparam);
@@ -121,6 +132,7 @@ Engine::Engine(const wchar_t* WindowName, int x, int y, int width, int height, H
     wc.lpszClassName = className;
     wc.hbrBackground = (HBRUSH)(COLOR_BACKGROUND);
     wc.style = CS_OWNDC;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
     RegisterClass(&wc);
 

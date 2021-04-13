@@ -1,4 +1,8 @@
-struct Vec4
+struct Vector3{
+    float x, y, z;
+};
+
+/*struct Vec4
 {
     float x, y, z, w;
 
@@ -31,4 +35,4 @@ Mat4f CreateOrthoMatrix(float left, float right, float bottom, float top, float 
     Mat4f mat = {x,y,z,w};
 
     return mat;
-}
+}*/

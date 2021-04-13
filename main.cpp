@@ -66,6 +66,7 @@ unsigned int CompileShader(char* fileName, unsigned int type)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+
     float screenWidth = 1280;
     float screenHeight = 720;
 
@@ -139,15 +140,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     float x = 0, y = 0;
     float s = 100.0f;
 
+    bool wireFrame = false;
+
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); WIREFRAME
 
     // Main Loop
     while(engine->EngineRunning())
     {
+        if(wireFrame) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        else glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
         glClear(GL_COLOR_BUFFER_BIT);
 
         tran = glm::translate(view, glm::vec3(-300.0f, y, 0.0f));
-        rot = glm::rotate(tran, a, glm::vec3(0,0,-1));
+        rot = glm::rotate(tran, 0.0f, glm::vec3(0,0,-1));
         scale = glm::scale(rot, glm::vec3(s));
 
         model = scale;
@@ -158,8 +164,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 
-        tran = glm::translate(view, glm::vec3(300.0f, 0.0f, 0.0f));
-        rot = glm::rotate(tran, -a, glm::vec3(0,0,-1));
+        tran = glm::translate(view, glm::vec3(300.0f, y, 0.0f));
+        rot = glm::rotate(tran, 0.0f, glm::vec3(0,0,-1));
         scale = glm::scale(rot, glm::vec3(100));
 
         model = scale;
@@ -171,7 +177,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         engine->SwapGLBuffers();
 
-        if(aHeld) a += 0.01f;
+        if(Keys['A']) a += 0.01f;
+        if(Keys['D']) a -= 0.01f;
+
+        if(Keys['W']) y += 3.0f;
+        if(Keys['S']) y -= 3.0f;
+
+        if(Keys['F']) wireFrame = true;
+        if(Keys['G']) wireFrame = false;
     }
 
     return 0;
