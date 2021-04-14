@@ -22,6 +22,8 @@ public:
     Engine(const wchar_t* WindowName, int x, int y, int width, int height, HINSTANCE hInstance, int options);
     ~Engine();
 
+    static float deltaTime;
+
     bool EngineRunning();
     void SwapGLBuffers();
 

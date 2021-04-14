@@ -8,9 +8,15 @@
 #include <Windows.h>
 #include <windowsx.h>
 #include <stdio.h>
+#include <chrono>
 
- bool Keys[127];
- bool Mouse[3];
+bool Keys[127];
+bool Mouse[3];
+
+auto tp1 = std::chrono::system_clock::now();
+auto tp2 = std::chrono::system_clock::now();
+float fps = 0;
+float Engine::deltaTime = 0;
 
 LRESULT Engine::WindowDestroy(HWND hwnd)
 {
@@ -104,6 +110,11 @@ bool Engine::EngineRunning()
         TranslateMessage(&m_msg);
         DispatchMessage(&m_msg);
     }
+
+    tp2 = std::chrono::system_clock::now();
+    std::chrono::duration<float> elapsedTime = tp2 - tp1;
+    tp1 = tp2;
+    deltaTime = elapsedTime.count();
 
     return true;
 }

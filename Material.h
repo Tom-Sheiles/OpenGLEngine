@@ -1,21 +1,19 @@
 #pragma once
 
-#define STANDARD_SHADER 0x01
+#include "Shader.h"
+#include <iostream>
 
 class Material
 {
 private:
-    unsigned int m_Shader;
-
-    void GetShaderCompileInfo(unsigned int id);
-    unsigned int CompileShader(char* fileName, unsigned int type);
+    Shader *m_Shader;
+    std::pair<int, float*> u_Color; //Should be map later for more and non staticlly defined uniforms
 
 public:
-    Material(unsigned int inbuiltShader);
-    void SetColor(const char* name, const char* color);
+    Material();
+    ~Material();
     void SetColor(const char* name, float c0, float c1, float c2, float c3);
-
     void Bind();
 
-    inline unsigned int GetShader() const { return m_Shader; }
+    inline Shader *GetShader() {return m_Shader;}
 };

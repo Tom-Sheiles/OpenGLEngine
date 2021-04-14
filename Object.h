@@ -17,7 +17,6 @@ protected:
     unsigned int m_IndexBuffer;
     unsigned int m_nIndicies;
 
-    Material *m_Material;
     glm::mat4 m_modelMatrix;
     int u_MVP;
 
@@ -25,6 +24,8 @@ public:
     Vector3 position;
     Vector3 rotation;
     Vector3 scale;
+
+    Material *m_Material;
 
     unsigned int GetNIndicies() { return m_nIndicies; }
     virtual void transformObject() = 0;
