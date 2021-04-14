@@ -27,7 +27,8 @@ void Renderer::Init(int screenWidth, int screenHeight, Engine *engine)
 
     glClearColor(0.53f, 0.42f, 0.65f, 1);
 
-    projectionMatrix = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
+    projectionMatrix = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -5.0f, 5.0f);
+    //projectionMatrix = glm::perspective(45.0f, (float)screenWidth/screenHeight, 1.0f, 1000.0f);
     viewMatrix = glm::translate(projectionMatrix, glm::vec3(screenWidth/2, screenHeight/2, 0));
     viewMatrix = glm::scale(viewMatrix, glm::vec3(100.0f));
 }

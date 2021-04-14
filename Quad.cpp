@@ -54,7 +54,11 @@ void Quad::transformObject()
     m_Material->Bind();
 
     m_modelMatrix = glm::translate(Renderer::viewMatrix, glm::vec3(position.x, position.y, position.z));
+
+    m_modelMatrix = glm::rotate(m_modelMatrix, rotation.x, glm::vec3(1,0,0));
+    m_modelMatrix = glm::rotate(m_modelMatrix, rotation.y, glm::vec3(0,1,0));
     m_modelMatrix = glm::rotate(m_modelMatrix, rotation.z, glm::vec3(0,0,1));
+
     m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
     glUniformMatrix4fv(u_MVP, 1, GL_FALSE, &m_modelMatrix[0][0]);

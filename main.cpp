@@ -44,6 +44,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             else quad = new Quad(red);
             quad->position.x = x;
             quad->position.y = y;
+            //quad->position.z = -3;
             quad->scale = {0.3f, 0.3f, 1};
             x += 0.8f;
             objects.push_back(quad);
@@ -78,9 +79,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             engine->SetWindowTitle(buffer);
             ticks = 0;
         }
-
-        objects[15]->position.x += 1.0f * deltaTime;
-        objects[15]->position.y += 1.0f * deltaTime;
 
         for(int i = 0; i < objects.size(); i++)
         {
