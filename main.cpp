@@ -20,6 +20,22 @@ const int maxQuads = 1000;
 const int maxVerts = maxQuads * 4;
 const int maxIndicies = maxQuads * 6;
 
+struct VertexBufferElement{
+    unsigned int type;
+    unsigned int count;
+};
+
+struct VertexBufferLayout{
+    unsigned int stride;
+    std::vector<VertexBufferElement> elements;
+    VertexBufferLayout() : stride(0){}
+
+    void PushFloat(unsigned int count){
+        elements.push_back({GL_FLOAT, count});
+        stride += sizeof(GL_FLOAT) * count;
+    }
+};
+
 struct Vertex{
     Vector3 positions;
     Vector3 color;
@@ -28,6 +44,7 @@ struct Vertex{
 struct MaterialS{
     Shader *shader;
     Vector3 color;
+    VertexBufferLayout vbl;
 };
 
 class ObjectS{
@@ -48,16 +65,53 @@ public:
     }
 };
 
+
+
 struct RenderBatch{
     Shader *shader;
     ObjectS *objects;
-    int VBO;
-    int IBO;
+    unsigned int VBO;
+    unsigned int IBO;
     Vertex verticies[maxVerts];
     unsigned int indicies[maxIndicies];
 };
 
-RenderBatch renderBatches[10];
+class RendererS {
+private:
+    RenderBatch m_RenderBatches[10];
+    int batchIndex = 0;
+
+    void CreateVB()
+    {
+        glGenBuffers(1, &m_RenderBatches[batchIndex].VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RenderBatches[batchIndex].VBO);
+        glBufferData(GL_ARRAY_BUFFER, maxVerts * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+    }
+
+    void CreateIBO()
+    {
+        glGenBuffers(1, &m_RenderBatches[batchIndex].IBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RenderBatches[batchIndex].IBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndicies * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
+    }
+
+    void EnableVertexAttribs()
+    {
+        
+    }
+
+public:
+    RendererS(){
+        Shader *standardShader = new Shader("./res/Shaders/StandardVertex.GLSL", "./res/Shaders/StandardFragment.GLSL");
+        m_RenderBatches[0].shader = standardShader;
+        glClearColor(0.53f, 0.42f, 0.65f, 1);
+
+        CreateVB();
+        CreateIBO();
+    }
+
+    void RegisterObject();
+};
 
 std::array<Vertex, 4> CreateQuad(float x, float y, float scale, MaterialS mat)
 {
@@ -108,8 +162,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 
     QuadS *quad = new QuadS({0, 0, 1}, {1,1,1}, red);
-
-
 
 
     glm::mat4 proj;
