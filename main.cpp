@@ -16,6 +16,10 @@
 
 #include<array>
 
+const int maxQuads = 1000;
+const int maxVerts = maxQuads * 4;
+const int maxIndicies = maxQuads * 6;
+
 struct Vertex{
     Vector3 positions;
     Vector3 color;
@@ -25,6 +29,35 @@ struct MaterialS{
     Shader *shader;
     Vector3 color;
 };
+
+class ObjectS{
+public:
+    Vector3 position;
+    Vector3 rotation;
+    Vector3 scale;
+    MaterialS material;
+};
+
+class QuadS: public ObjectS{
+public:
+    QuadS(Vector3 position, Vector3 scale, MaterialS material)
+    {
+        ObjectS::position = position;
+        ObjectS::scale = scale;
+        ObjectS::material = material;
+    }
+};
+
+struct RenderBatch{
+    Shader *shader;
+    ObjectS *objects;
+    int VBO;
+    int IBO;
+    Vertex verticies[maxVerts];
+    unsigned int indicies[maxIndicies];
+};
+
+RenderBatch renderBatches[10];
 
 std::array<Vertex, 4> CreateQuad(float x, float y, float scale, MaterialS mat)
 {
@@ -59,20 +92,25 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     float screenHeight = 600;
     float nearPlane = -0.3f;
     float farPlane = 1000.0f;
-
     float fov = 45.0f;
 
     bool isPerspective = false;
 
-    Engine *engine = new Engine(L"APP", 200, 50, screenWidth, screenHeight, hInstance, CREATE_CONSOLE);
+    Engine *engine = new Engine(L"APP", 200, 50, screenWidth, screenHeight, hInstance, 0);
     Renderer::Init(screenWidth, screenHeight, engine, SHADED | CULLING);
 
     Shader *shader = new Shader("./res/Shaders/StandardVertex.GLSL", "./res/Shaders/StandardFragment.GLSL");
 
-    MaterialS red    {shader, {1, 0, 0}};
-    MaterialS blue   {shader, {0, 0, 1}};
-    MaterialS green  {shader, {0, 1, 0}};
-    MaterialS yellow {shader, {1, 1, 0}};
+    MaterialS red    {shader, {0.78, 0.19, 0.19}};
+    MaterialS blue   {shader, {0.19, 0.19, 0.78}};
+    MaterialS green  {shader, {0.19, 0.78, 0.19}};
+    MaterialS yellow {shader, {0.78, 0.78, 0.19}};
+
+
+    QuadS *quad = new QuadS({0, 0, 1}, {1,1,1}, red);
+
+
+
 
     glm::mat4 proj;
     glm::mat4 view;
@@ -89,10 +127,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     GLint vp = glGetUniformLocation(shader->GetShaderID(), "u_ViewProjection");
     glUniformMatrix4fv(vp, 1, GL_FALSE, &view[0][0]);
 
-    const int maxQuads = 1000;
-    const int maxVerts = maxQuads * 4;
-    const int maxIndicies = maxQuads * 6;
-
     unsigned int vb;
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
@@ -105,21 +139,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 
     unsigned int ind[maxIndicies];
-    auto ind0 = CreateQuadIndexBuffer(0);
-    auto ind1 = CreateQuadIndexBuffer(1);
-    auto ind2 = CreateQuadIndexBuffer(2);
-    auto ind3 = CreateQuadIndexBuffer(3);
-
-
-    memcpy(ind, ind0.data(), 6 * sizeof(unsigned int));
-    memcpy(ind + 6, ind1.data(), 6 * sizeof(unsigned int));
-    memcpy(ind + 12, ind2.data(), 6 * sizeof(unsigned int));
-    memcpy(ind + 12+6, ind3.data(), 6 * sizeof(unsigned int));
 
     unsigned int ib;
     glGenBuffers(1, &ib);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ind), ind, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ind), nullptr, GL_DYNAMIC_DRAW);
 
 
     float cameraX = screenWidth/2;
@@ -155,9 +179,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         memcpy(verts + quad0.size() + quad1.size(), quad2.data(), quad2.size() * sizeof(Vertex));
         memcpy(verts + quad0.size() + quad1.size() + quad2.size(), quad3.data(), quad3.size() * sizeof(Vertex));
 
+        auto ind0 = CreateQuadIndexBuffer(0);
+        auto ind1 = CreateQuadIndexBuffer(1);
+        auto ind2 = CreateQuadIndexBuffer(2);
+        auto ind3 = CreateQuadIndexBuffer(3);
+
+
+        memcpy(ind, ind0.data(), 6 * sizeof(unsigned int));
+        memcpy(ind + 6, ind1.data(), 6 * sizeof(unsigned int));
+        memcpy(ind + 12, ind2.data(), 6 * sizeof(unsigned int));
+        memcpy(ind + 12+6, ind3.data(), 6 * sizeof(unsigned int));
+
 
         glBindBuffer(GL_ARRAY_BUFFER, vb);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(ind), ind);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
