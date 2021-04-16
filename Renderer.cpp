@@ -37,7 +37,7 @@ void Renderer::Init(int screenWidth, int screenHeight, Engine *engine, unsigned 
     //viewMatrix = glm::translate(projectionMatrix, glm::vec3(screenWidth/2, screenHeight/2, 0));
     viewMatrix = glm::scale(projectionMatrix, glm::vec3(40.0f));
 
-    s_StandardShader = new Shader("./res/Shaders/StandardVertex.GLSL", "./res/Shaders/StandardFragment.GLSL");
+    //s_StandardShader = new Shader("./res/Shaders/StandardVertex.GLSL", "./res/Shaders/StandardFragment.GLSL");
 }
 
 void Renderer::Register(Object *object)
