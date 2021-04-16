@@ -64,8 +64,8 @@ Shader::Shader(const char *vertexName, const char* fragmentName)
         glLinkProgram(m_ShaderID);
         glValidateProgram(m_ShaderID);
 
-        glDeleteProgram(vs);
-        glDeleteProgram(fs);
+       // glDeleteProgram(vs);
+        //glDeleteProgram(fs);
 
         glUseProgram(m_ShaderID);
 }
