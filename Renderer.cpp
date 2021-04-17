@@ -21,8 +21,9 @@ MessageCallback( GLenum source,
 
 void Renderer::Init(int screenWidth, int screenHeight, Engine *engine, unsigned int options)
 {
-    glEnable              ( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( MessageCallback, 0 );  
+    glDebugMessageCallback(MessageCallback, 0); 
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
     s_engine = engine;
 

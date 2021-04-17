@@ -9,7 +9,7 @@ private:
     unsigned int m_ShaderID;
 
 public:
-    Shader(const char *vertexName, const char* fragmentName);
+    Shader(const char *vertexName, const char *fragmentName);
     inline unsigned int GetShaderID() { return m_ShaderID; }
 };
 

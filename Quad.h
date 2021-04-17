@@ -5,10 +5,8 @@
 class Quad: public Object
 {
 public:
-    Quad(Material *material);
+    Quad();
     ~Quad();
-
-    void transformObject();
 
 private:
     void RegisterObject();
