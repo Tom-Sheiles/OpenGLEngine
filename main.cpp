@@ -20,18 +20,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     float nearPlane = -0.3f;
     float farPlane = 1000.0f;
 
-    Engine *engine = new Engine(L"APP", 200, 50, screenWidth, screenHeight, hInstance, 0);
-    Shader *shader = new Shader("./res/Shaders/StandardVertex.GLSL", "./res/Shaders/StandardFragment.GLSL");
+    Engine *engine = new Engine(L"APP", 200, 50, screenWidth, screenHeight, hInstance, CREATE_CONSOLE);
     //Renderer::Init(screenWidth, screenHeight, engine, SHADED | CULLING);
+
+    Renderer2D::Init(screenWidth, screenHeight, engine);
 
     while(engine->EngineRunning())
     {
 
-        engine->SwapGLBuffers();
+        Renderer2D::Draw();
     }
 
     delete engine;
-    delete shader;
+    //delete shader;
 
     return 0;
 }

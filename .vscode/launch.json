@@ -5,7 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "CL Debug",
+            "name": "Run without Build",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${fileDirname}\\Builds\\main.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd":"${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "CL Build and Debug",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${fileDirname}\\Builds\\main.exe",

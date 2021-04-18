@@ -7,7 +7,7 @@ glm::mat4 Renderer::viewMatrix;
 Engine *Renderer::s_engine;
 Shader *Renderer::s_StandardShader;
 
-void GLAPIENTRY
+/*oid GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
                  GLuint id,
@@ -17,13 +17,13 @@ MessageCallback( GLenum source,
                  const void* userParam )
 {
     printf("GL Error message = %s\n", message);
-}
+}*/
 
 void Renderer::Init(int screenWidth, int screenHeight, Engine *engine, unsigned int options)
 {
-    glDebugMessageCallback(MessageCallback, 0); 
+    /*glDebugMessageCallback(MessageCallback, 0); 
     glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);*/
 
     s_engine = engine;
 
