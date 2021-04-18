@@ -6,8 +6,8 @@ glm::mat4 Renderer2D::s_ViewMatrix;
 Engine *Renderer2D::s_Engine;
 RenderBatch2D Renderer2D::s_RenderBatches;
 
-float *Renderer2D::s_Verticies;
-uint32_t *Renderer2D::s_Indicies;
+std::vector<float> Renderer2D::s_Verticies;
+std::vector<uint32_t> Renderer2D::s_Indicies;
 uint32_t Renderer2D::s_nIndicies;
 uint32_t Renderer2D::s_nVerticies;
 
@@ -17,6 +17,13 @@ float vert[] = {
          0.5f,  0.5f,
         -0.5f, 0.5f};
     uint32_t ind[] = {0,1,2,2,3,0};
+
+    float vert2[] = {
+        -0.5f, -2.0f,
+         0.5f, -2.0f,
+         0.5f,  -1.0f,
+        -0.5f, -1.0f};
+    uint32_t ind2[] = {4,5,6,6,7,4};
 
  void GLAPIENTRY
 MessageCallback( GLenum source,
@@ -41,7 +48,7 @@ void Renderer2D::Init(float screenWidth, float screenHeight, Engine *engine)
     s_Engine = engine;
     s_ProjectionMatrix = glm::ortho(0.0f, screenWidth, 0.0f, screenHeight, 0.3f, 10.0f);
     s_ViewMatrix = glm::translate(s_ProjectionMatrix, glm::vec3(screenWidth/2, screenHeight/2, 0));
-    s_ViewMatrix = glm::scale(s_ViewMatrix, glm::vec3(10.0f));
+    s_ViewMatrix = glm::scale(s_ViewMatrix, glm::vec3(50.0f));
     
     s_UnlitShader = new Shader("./res/Shaders/UnlitVertex.GLSL","./res/Shaders/UnlitFragment.GLSL");
     uint32_t ViewProjection = glGetUniformLocation(s_UnlitShader->GetShaderID(), "u_ViewProjection");
@@ -65,18 +72,20 @@ void Renderer2D::Init(float screenWidth, float screenHeight, Engine *engine)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    s_Verticies = new float[4*2];
-    s_Indicies = new uint32_t[6];
-    Register();
+    int nReservedQuads = 20;
+
+    s_Verticies.reserve(8*nReservedQuads);
+    s_Indicies.reserve(6*nReservedQuads);
+
+    Register(vert, ind);
+    Register(vert2, ind2);
 }
 
-void Renderer2D::Register()
+void Renderer2D::Register(float *verts, uint32_t* inds)
 {
-    memcpy(s_Verticies, vert, sizeof(vert));
-    memcpy(s_Indicies, ind, sizeof(ind));
-    
-    s_nIndicies += 6;
-    s_nVerticies += (4*2);
+    s_Verticies.insert(s_Verticies.end(), verts, verts+8);
+    s_Indicies.insert(s_Indicies.end(), inds, inds+6);
+    return;
 }
 
 void Renderer2D::Draw()
@@ -86,11 +95,11 @@ void Renderer2D::Draw()
     glBindBuffer(GL_ARRAY_BUFFER, s_RenderBatches.VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_RenderBatches.IndexBuffer);
     
-    glBufferSubData(GL_ARRAY_BUFFER, 0, s_nVerticies * sizeof(float), s_Verticies);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, s_nIndicies * sizeof(uint32_t), s_Indicies);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, s_Verticies.size() * sizeof(float), s_Verticies.data());
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, s_Indicies.size() * sizeof(uint32_t), s_Indicies.data());
 
     
-    glDrawElements(GL_TRIANGLES, s_nIndicies, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, s_Indicies.size(), GL_UNSIGNED_INT, nullptr);
 
     s_Engine->SwapGLBuffers();
 }

@@ -30,7 +30,7 @@ public:
     static Shader *s_UnlitShader;
     static void Init(float screenWidth, float screenHeight, Engine *engine);
     static void Draw();
-    static void Register();
+    static void Register(float *verts, uint32_t* inds);
 
 private:
     static Engine *s_Engine;
@@ -40,8 +40,8 @@ private:
     
     static RenderBatch2D s_RenderBatches;
 
-    static float *s_Verticies;
-    static uint32_t *s_Indicies;
+    static std::vector<float> s_Verticies;
+    static std::vector<uint32_t> s_Indicies;
     static uint32_t s_nIndicies;
     static uint32_t s_nVerticies;
 };
