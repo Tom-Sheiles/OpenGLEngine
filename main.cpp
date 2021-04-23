@@ -17,22 +17,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     float screenWidth = 800;
     float screenHeight = 600;
-    float nearPlane = -0.3f;
-    float farPlane = 1000.0f;
 
     Engine *engine = new Engine(L"APP", 200, 50, screenWidth, screenHeight, hInstance, CREATE_CONSOLE);
-    //Renderer::Init(screenWidth, screenHeight, engine, SHADED | CULLING);
-
     Renderer2D::Init(screenWidth, screenHeight, engine);
+
 
     while(engine->EngineRunning())
     {
-
         Renderer2D::Draw();
     }
 
-    delete engine;
-    //delete shader;
 
+    delete engine;
     return 0;
 }
