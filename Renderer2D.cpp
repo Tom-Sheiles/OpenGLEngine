@@ -12,29 +12,39 @@ uint32_t Renderer2D::s_nIndicies;
 uint32_t Renderer2D::s_nVerticies;
 
 float vert[] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f, 0.5f};
+        -0.5f, -0.5f, 1.0, 0.0, 0.0,
+         0.5f, -0.5f, 0.0, 1.0, 0.0,
+         0.5f,  0.5f, 0.0, 0.0, 1.0,
+        -0.5f, 0.5f,  1.0, 1.0, 0.0 };
     uint32_t ind[] = {0,1,2,2,3,0};
 
     float vert2[] = {
-        -0.5f, -2.0f,
-         0.5f, -2.0f,
-         0.5f,  -1.0f,
-        -0.5f, -1.0f};
+        -0.5f,  -2.0f,  1.0, 0.0, 0.0,
+         0.5f,  -2.0f, 0.0, 1.0, 0.0,
+         0.5f,  -1.0f, 0.0, 0.0, 1.0,
+        -0.5f,  -1.0f,  1.0, 1.0, 0.0   };
     uint32_t ind2[] = {4,5,6,6,7,4};
 
  void GLAPIENTRY
-MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLchar* message,
-                 const void* userParam )
+MessageCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam )
 {
-    printf("GL Error message = %s\n", message);
+    char* sevString;
+    char* messageType;
+
+    switch (severity){
+    case GL_DEBUG_SEVERITY_HIGH: sevString = new char[] {"!!HIGH SEVERITY!!"}; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: sevString = new char[] {"Med Severity"}; break;
+    case GL_DEBUG_SEVERITY_LOW: sevString = new char[] {"Low Severity"}; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: sevString = new char[] {"Notification"}; break; }
+
+    switch (type){
+    case GL_DEBUG_TYPE_ERROR: messageType = new char[] {"Error"}; break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: messageType = new char[] {"Deprecated"}; break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: messageType = new char[] {"Undefined Behaviour"}; break;
+    case GL_DEBUG_TYPE_PERFORMANCE: messageType = new char[] {"Performance Issue"}; break;
+    default: messageType = new char[] {"Other"}; break; }
+
+    printf("OpenGl %s (%d): %s - %s\n\n", messageType, id, sevString, message);
 }
 
 void Renderer2D::Init(float screenWidth, float screenHeight, Engine *engine)
@@ -65,16 +75,16 @@ void Renderer2D::Init(float screenWidth, float screenHeight, Engine *engine)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, s_RenderBatches.MaxIndicies * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-    //glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, tint));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, tint));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     int nReservedQuads = 20;
 
-    s_Verticies.reserve(8*nReservedQuads);
+    s_Verticies.reserve(20*nReservedQuads);
     s_Indicies.reserve(6*nReservedQuads);
 
     Register(vert, ind);
@@ -83,7 +93,7 @@ void Renderer2D::Init(float screenWidth, float screenHeight, Engine *engine)
 
 void Renderer2D::Register(float *verts, uint32_t* inds)
 {
-    s_Verticies.insert(s_Verticies.end(), verts, verts+8);
+    s_Verticies.insert(s_Verticies.end(), verts, verts+20);
     s_Indicies.insert(s_Indicies.end(), inds, inds+6);
     return;
 }

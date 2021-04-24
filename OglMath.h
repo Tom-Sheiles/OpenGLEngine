@@ -4,6 +4,10 @@ struct Vector3{
     float x, y, z;
 };
 
+struct Vector2{
+    float x, y;
+};
+
 /*float* HexToFv(const char* color)
 {
     float *hex = new float[4];

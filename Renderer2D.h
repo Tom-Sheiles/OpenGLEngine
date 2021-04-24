@@ -11,7 +11,7 @@
 #include <vector>
 
 struct QuadVertex{
-    Vector3 position;
+    Vector2 position;
     Vector3 tint;
 };
 

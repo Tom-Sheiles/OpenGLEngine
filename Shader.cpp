@@ -41,6 +41,8 @@ unsigned int Shader::CompileShader(const char* fileName, unsigned int type)
     fread(source, fileSize, 1, fptr);
     source[fileSize] = '\0';
 
+    printf("%s\n\n", source);
+
     unsigned int id = glCreateShader(type);
     glShaderSource(id, 1, &source, nullptr);
     glCompileShader(id);
@@ -55,17 +57,19 @@ unsigned int Shader::CompileShader(const char* fileName, unsigned int type)
 
 Shader::Shader(const char *vertexName, const char* fragmentName)
 {
-        m_ShaderID = glCreateProgram();
-        unsigned int vs = CompileShader(vertexName, GL_VERTEX_SHADER);
-        unsigned int fs = CompileShader(fragmentName, GL_FRAGMENT_SHADER);
+    m_ShaderID = glCreateProgram();
+    unsigned int vs = CompileShader(vertexName, GL_VERTEX_SHADER);
+    unsigned int fs = CompileShader(fragmentName, GL_FRAGMENT_SHADER);
 
-        glAttachShader(m_ShaderID, vs);
-        glAttachShader(m_ShaderID, fs);
-        glLinkProgram(m_ShaderID);
-        glValidateProgram(m_ShaderID);
+    glAttachShader(m_ShaderID, vs);
+    glAttachShader(m_ShaderID, fs);
+    glLinkProgram(m_ShaderID);
+    glValidateProgram(m_ShaderID);
 
-       // glDeleteProgram(vs);
-        //glDeleteProgram(fs);
+    // glDeleteProgram(vs);
+    //glDeleteProgram(fs);
 
-        glUseProgram(m_ShaderID);
+    glUseProgram(m_ShaderID);
+    glClearColor(0.23, 0.23, 0.23, 1.0f);
+
 }
