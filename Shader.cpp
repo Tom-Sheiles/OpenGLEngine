@@ -41,8 +41,6 @@ unsigned int Shader::CompileShader(const char* fileName, unsigned int type)
     fread(source, fileSize, 1, fptr);
     source[fileSize] = '\0';
 
-    printf("%s\n\n", source);
-
     unsigned int id = glCreateShader(type);
     glShaderSource(id, 1, &source, nullptr);
     glCompileShader(id);
